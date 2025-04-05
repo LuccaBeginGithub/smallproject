@@ -132,8 +132,8 @@ def main():
             comm.Abort(1)
 
         # Send termination signal (None) to all workers
-        for _ in range(size - 1):
-            comm.scatter(None, root=0)
+        chunks = [None] * size
+        comm.scatter(chunks, root=0)
         
         happiest_hours = heapq.nlargest(5, total_hour_sentiments.items(), key=lambda x: x[1])
         saddest_hours = heapq.nsmallest(5, total_hour_sentiments.items(), key=lambda x: x[1])
