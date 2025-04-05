@@ -15,9 +15,9 @@ run_sentiment_analysis() {
     echo "Running with $nodes node(s) and $cores core(s)..."
     
     if [ "$nodes" -eq 2 ]; then
-        mpirun -n 8 --map-by ppr:4:node python sentiment_analysis.py mastodon-16m.ndjson --batch-size 10000
+        mpirun -n 8 --map-by ppr:4:node python sentiment_analysis.py mastodon-144g.ndjson --batch-size 10000
     else
-        mpirun -n $cores python sentiment_analysis.py mastodon-16m.ndjson --batch-size 10000
+        mpirun -n $cores python sentiment_analysis.py mastodon-144g.ndjson --batch-size 10000
     fi
 }
 
@@ -38,7 +38,7 @@ JOB2=$(sbatch --nodes=1 --ntasks=8 \
     --job-name=sentiment_1n8c \
     --output=sentiment_1n8c_%j.out \
     --error=sentiment_1n8c_%j.err \
-    --time=00:15:00 \
+    --time=4:00:00 \
     --wrap="$(declare -f run_sentiment_analysis); run_sentiment_analysis 1 8 '1n8c'")
 
 echo "Submitted job 2: ${JOB2}"
@@ -49,7 +49,7 @@ JOB3=$(sbatch --nodes=2 --ntasks=8 --ntasks-per-node=4 \
     --job-name=sentiment_2n8c \
     --output=sentiment_2n8c_%j.out \
     --error=sentiment_2n8c_%j.err \
-    --time=00:15:00 \
+    --time=5:00:00 \
     --wrap="$(declare -f run_sentiment_analysis); run_sentiment_analysis 2 8 '2n8c'")
 
 echo "Submitted job 3: ${JOB3}"
